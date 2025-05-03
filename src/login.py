@@ -30,4 +30,24 @@ password.send_keys(Keys.ENTER)
 
 time.sleep(4)
 
+<<<<<<< HEAD
 
+=======
+WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[href="/view/inventory"]'))
+).click()
+
+time.sleep(4)
+
+WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.LINK_TEXT, "Receipts"))
+).click()
+
+time.sleep(5)
+
+WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.LINK_TEXT, "New Receipt"))
+).click()
+
+time.sleep(5)
+>>>>>>> feature1
