@@ -15,11 +15,11 @@ def login(driver):
 
     password.send_keys("51Grimston")
 
-    time.sleep(4)
+    
 
     password.send_keys(Keys.ENTER)
 
-    time.sleep(4)
+    
     return driver
 
 

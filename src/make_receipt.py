@@ -10,35 +10,35 @@ def make_receipt(driver, invoice):
         EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[href="/view/inventory"]'))
     ).click()
     
-    time.sleep(4)
+    
     
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.LINK_TEXT, "Receipts"))
     ).click()
     
-    time.sleep(5)
+    
     
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.LINK_TEXT, "New Receipt"))
     ).click()
     
-    time.sleep(5)
+    
 
     supplier = driver.find_element(By.XPATH, "//input[@placeholder ='Select Supplier (required)']")
 
     supplier.send_keys("Western Drug Distribution Centre")
     supplier.send_keys(Keys.ENTER)
 
-    time.sleep(5)
+   
 
     invoice_number = driver.find_element(By.NAME, 'invoice')
 
     invoice_number.send_keys(invoice.invoice_number)
 
-    time.sleep(5)
+    
 
     WebDriverWait(driver, 10).until(
     EC.element_to_be_clickable((By.CSS_SELECTOR, ".btn.btn-primary"))
     ).click()
 
-    time.sleep(5)
+    

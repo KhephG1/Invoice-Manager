@@ -12,6 +12,7 @@ from invoice import Invoice
 from login import login
 from make_receipt import make_receipt
 from fill_receipt import fill_receipt
+from post_receipt import post_the_receipt
 
 options  = Options()
 options.add_argument("--window-size=1920,1080")
@@ -25,6 +26,7 @@ def main():
     login(driver)
     make_receipt(driver, inv)
     fill_receipt(driver, inv)
+    post_the_receipt(driver)
 
 if __name__ == "__main__":
     main()

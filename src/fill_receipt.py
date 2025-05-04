@@ -5,13 +5,17 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
 
+
+
+def promp_user_for_quantity(type,quantity,description):
+    print(type, quantity, description)
+    
 def fill_receipt(driver, invoice):
+    time.sleep(0.5)
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.LINK_TEXT, "Items"))
     ).click()
-    
-    time.sleep(5)
-    
+    time.sleep(0.5)
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.LINK_TEXT, "Add Item"))
     ).click()
@@ -23,22 +27,23 @@ def fill_receipt(driver, invoice):
             itm.send_keys(item.number)
             time.sleep(0.5)
             itm.send_keys(Keys.ENTER)
-            time.sleep(5)
+            
             itm = driver.find_element(By.NAME, 'receivedQuantity')
+            type = driver.find_element(By.CSS_SELECTOR, "div.quantity span")
+            promp_user_for_quantity(type.text, item.quantity, item.description)
             itm.send_keys(item.quantity)
-            time.sleep(5)
             itm = driver.find_element(By.NAME, 'stockQuantity')
             itm.send_keys(item.quantity)
-            time.sleep(5)
+            
             itm = driver.find_element(By.NAME, 'expiration')
             itm.send_keys(item.expiry_date)
-            time.sleep(5)
+            
             itm = driver.find_element(By.NAME, 'cost')
             itm.send_keys(item.price)
-            time.sleep(5)
+            
             itm = driver.find_element(By.NAME, 'manufacturer')
             itm.send_keys(item.manufacturer)
-            time.sleep(5)
+            
             itm = driver.find_element(By.NAME, 'lot')
             itm.send_keys(item.lot_number)
             if not flag:
@@ -54,7 +59,7 @@ def fill_receipt(driver, invoice):
                 WebDriverWait(driver, 10).until(
                     EC.element_to_be_clickable((By.CLASS_NAME, "btn-primary"))
                 ).click()
-            time.sleep(5)
+            
 
     
-    time.sleep(5)
+   
