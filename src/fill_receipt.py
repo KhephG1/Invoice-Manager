@@ -62,9 +62,7 @@ def fill_receipt(driver, invoice, status_text,root):
 
     WebDriverWait(driver, 10).until(
     EC.element_to_be_clickable((By.CLASS_NAME, "close"))
-    ).click()
-    time.sleep(10)
-    threading.Thread(target=enter_quantity, args=(driver, invoice, status_text, root)).start()     
+    ).click()   
     log_status(status_text, "Receipt Filled Successfully. Note: Press 'Fill Quantities' to ensure item quantities are correct")
             
             

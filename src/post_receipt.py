@@ -7,15 +7,10 @@ import time
 
 def post_the_receipt(driver):
     WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.CLASS_NAME, "close"))
-    ).click()
-
-    WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.LINK_TEXT, "Post Receipt"))
     ).click()
     
-    # WebDriverWait(driver, 10).until(
-    # EC.element_to_be_clickable((By.CSS_SELECTOR, ".btn.btn-primary"))
-    # ).click()
+    WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.CSS_SELECTOR, ".btn.btn-primary"))
+    ).click()
 
-    time.sleep(5)

@@ -12,6 +12,8 @@ from invoice import Invoice
 from login import login
 from make_receipt import make_receipt
 from fill_receipt import fill_receipt
+from enter_qty import enter_quantity
+from post_receipt import post_the_receipt
 invoice = None
 
 status_text = None
@@ -44,9 +46,16 @@ def receipt():
     make_receipt(driver,invoice, status_text)
 
 def fill():
-    global invoice, status_text
+    global invoice, status_text, root
     fill_receipt(driver, invoice, status_text, root)
 
+def enter():
+    global invoice, status_text,root
+    threading.Thread(target=enter_quantity, args=(driver, invoice, status_text, root)).start()
+
+def post():
+    global invoice, status_text
+    post_the_receipt(driver)
 
 def handle_file_drop(event):
     global invoice, status_text, root
@@ -61,7 +70,7 @@ def handle_file_drop(event):
 # Setup WebDriver
 options = Options()
 options.add_argument("--window-size=1920,1080")
-#options.add_argument("--headless=new")
+options.add_argument("--headless=new")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 driver.implicitly_wait(2)
 
@@ -114,7 +123,8 @@ def main():
     ttk.Button(bottom_frame, text="Make Receipt", command=receipt).pack(side="left", padx=10)
     ttk.Button(bottom_frame, text="Exit", command=root.quit).pack(side="right", padx=10)
     ttk.Button(bottom_frame, text = "Fill Receipt", command = fill).pack(side = "left", padx=10)
-    ttk.Button(bottom_frame, text = "Enter Quantities", command = fill).pack(side = "left", padx=10)
+    ttk.Button(bottom_frame, text = "Enter Quantities", command = enter).pack(side = "left", padx=10)
+    ttk.Button(bottom_frame, text = "Post", command = post).pack(side = "left", padx=10)
     root.mainloop()
 
 if __name__ == "__main__":
