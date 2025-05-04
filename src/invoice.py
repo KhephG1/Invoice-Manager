@@ -57,7 +57,6 @@ class Invoice:
     def parse(self, status_text):
         try:
             pdf = PDFQuery(self.filename)
-            log_status("Invoice Opened successfully")
         except TypeError:
             pass
 

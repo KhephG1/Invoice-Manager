@@ -5,6 +5,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
 
+from log_status import log_status
+
 def make_receipt(driver, invoice, status_text):
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[href="/view/inventory"]'))
@@ -40,5 +42,7 @@ def make_receipt(driver, invoice, status_text):
     WebDriverWait(driver, 10).until(
     EC.element_to_be_clickable((By.CSS_SELECTOR, ".btn.btn-primary"))
     ).click()
+
+    log_status(f"Daysmart Receipt created with invoice number: {invoice.invoice_number}", status_text)
 
     

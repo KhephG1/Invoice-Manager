@@ -1,4 +1,5 @@
 from invoice import Invoice
+from selenium.common import exceptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -10,6 +11,7 @@ import threading
 
     
 def fill_receipt(driver, invoice, status_text,root):
+    missing_items = []
     time.sleep(0.5)
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.LINK_TEXT, "Items"))
@@ -23,7 +25,7 @@ def fill_receipt(driver, invoice, status_text,root):
     for page in invoice.pages:
         for item in page:
             itm = driver.find_element(By.XPATH, "//input[@placeholder ='Select item (required)']")
-            itm.send_keys(item.number)
+            itm.send_keys(99999999)
             time.sleep(0.5)
             itm.send_keys(Keys.ENTER)
             
@@ -46,16 +48,18 @@ def fill_receipt(driver, invoice, status_text,root):
             itm = driver.find_element(By.NAME, 'lot')
             itm.send_keys(item.lot_number)
             if not flag:
-                WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((By.CLASS_NAME, "dropdown-toggle-split"))
-                ).click()
-                
-                WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, "Save + Add"))
-                ).click()
-                flag=True
+                try:
+                    WebDriverWait(driver, 4).until(
+                        EC.element_to_be_clickable((By.CLASS_NAME, "dropdown-toggle-split"))
+                    ).click()
+                    
+                    WebDriverWait(driver, 4).until(
+                        EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, "Save + Add"))
+                    ).click()
+                except exceptions.TimeoutException:
+                    flag=True
             else:
-                WebDriverWait(driver, 10).until(
+                WebDriverWait(driver, 4).until(
                     EC.element_to_be_clickable((By.CLASS_NAME, "btn-primary"))
                 ).click()
 
@@ -63,7 +67,7 @@ def fill_receipt(driver, invoice, status_text,root):
     WebDriverWait(driver, 10).until(
     EC.element_to_be_clickable((By.CLASS_NAME, "close"))
     ).click()   
-    log_status(status_text, "Receipt Filled Successfully. Note: Press 'Fill Quantities' to ensure item quantities are correct")
+    log_status("Receipt Filled Successfully. Note: Press 'Enter Quantities' to ensure item quantities are correct", status_text)
             
             
 

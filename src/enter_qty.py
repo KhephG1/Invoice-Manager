@@ -59,12 +59,15 @@ def enter_quantity(driver, invoice, status_text,root):
             itm2 = driver.find_element(By.NAME, 'stockQuantity')
             itm2.clear()
             itm2.send_keys(str(int(input_val) * int(item.quantity)))
-
+            
             WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.CLASS_NAME, "btn-primary"))
             ).click()
 
+            log_status(f"Quantity: {int(input_val) * int(item.quantity)} assigned to {item.description}",status_text)
+
             time.sleep(0.3)
             i += 1
+    log_status("Complete! Click 'Post' to post the receipt in Daysmart",status_text)
     
     

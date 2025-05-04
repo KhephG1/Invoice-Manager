@@ -3,7 +3,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import time
 
-def login(driver, email, passwd):
+from log_status import log_status
+
+def login(driver, email, passwd, status_text):
 
     driver.get("https://vettersoftware.com/apps/index.php/october/login")
 
@@ -19,6 +21,7 @@ def login(driver, email, passwd):
 
     password.send_keys(Keys.ENTER)
 
+    log_status(f"Login successful with email: {email}",status_text,)
     
     return driver
 

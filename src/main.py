@@ -16,52 +16,50 @@ from enter_qty import enter_quantity
 from post_receipt import post_the_receipt
 invoice = None
 
-status_text = None
-
 root = TkinterDnD.Tk()
 
-def open_login_window():
+def open_login_window(status_text):
     def submit_credentials():
         email = email_var.get()
         password = password_var.get()
-        login(driver, str(email), str(password))
+        login(driver, str(email), str(password), status_text)
         login_window.destroy()
 
     login_window = tk.Toplevel()
-    login_window.title("Login")
+    login_window.title("Daysmart Login")
     login_window.geometry("300x200")
     ttk.Label(login_window, text = "Email:").pack(pady=(10,0))
     email_var = tk.StringVar()
     ttk.Entry(login_window, textvariable=email_var).pack(pady=5)
 
-    ttk.Label(login_window, text="Password:").pack(pady=(10, 0))
+    ttk.Label(login_window, text="Daysmart Password:").pack(pady=(10, 0))
     password_var = tk.StringVar()
     ttk.Entry(login_window, textvariable=password_var, show="*").pack(pady=5)
 
     ttk.Button(login_window, text="Submit", command=submit_credentials).pack(pady=20)
-    log_status(status_text, f"Login successfull with email: {email_var}")
 
-def receipt():
-    global invoice, status_text
+def receipt(status_text):
+    global invoice
     make_receipt(driver,invoice, status_text)
 
-def fill():
-    global invoice, status_text, root
+def fill(status_text):
+    global invoice, root
     fill_receipt(driver, invoice, status_text, root)
 
-def enter():
-    global invoice, status_text,root
+def enter(status_text):
+    global invoice,root
     threading.Thread(target=enter_quantity, args=(driver, invoice, status_text, root)).start()
 
-def post():
-    global invoice, status_text
-    post_the_receipt(driver)
+def post(status_text):
+    global invoice
+    post_the_receipt(driver, status_text)
 
-def handle_file_drop(event):
-    global invoice, status_text, root
+def handle_file_drop(event, status_text):
+    global invoice, root
     file_path = event.data.strip('{}')
     if file_path.lower().endswith(".pdf"):
         invoice = Invoice(file_path)
+        log_status(f"PDF received with path: {file_path}",status_text,)
         
     else:
         messagebox.showerror("Invalid File :(")
@@ -75,14 +73,14 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 driver.implicitly_wait(2)
 
 def main():
-    root.title("Daysmart++")
+    root.title("Invoice Receiver")
     root.iconbitmap("assiniboia.ico")
     root.geometry('1200x800')
 
     # --- Top Frame ---
     top_frame = ttk.Frame(root)
     top_frame.pack(fill="x", padx=10, pady=10)
-    ttk.Label(top_frame, text="Welcome to Daysmart++", font=("Segoe UI", 16)).pack()
+    ttk.Label(top_frame, text="Welcome to Invoice Receiver", font=("Segoe UI", 16)).pack()
 
     # --- Middle Frame (DnD and Log Side-by-Side) ---
     middle_frame = ttk.Frame(root)
@@ -91,7 +89,7 @@ def main():
     # Drag and Drop area
     drop_area = ttk.Label(
         middle_frame,
-        text="Drop your WDDC Invoice Here",
+        text="1. Drop your invoice here",
         background="#e0e0e0",
         relief="ridge",
         anchor="center",
@@ -113,18 +111,18 @@ def main():
     scrollbar.config(command=status_text.yview)
 
     # Bind drop event
-    drop_area.dnd_bind('<<Drop>>', lambda event: handle_file_drop(event))
+    drop_area.dnd_bind('<<Drop>>', lambda event: handle_file_drop(event, status_text))
 
     # --- Bottom Frame (Buttons) ---
     bottom_frame = ttk.Frame(root)
     bottom_frame.pack(fill="x", padx=10, pady=10)
-    ttk.Button(bottom_frame, text="Login", command=open_login_window).pack(side="left", padx=10)
-    ttk.Button(bottom_frame, text="Process Invoice", command=lambda: invoice.parse(status_text)).pack(side="left", padx=10)
-    ttk.Button(bottom_frame, text="Make Receipt", command=receipt).pack(side="left", padx=10)
+    ttk.Button(bottom_frame, text="2. Login", command=lambda: open_login_window(status_text)).pack(side="left", padx=10)
+    ttk.Button(bottom_frame, text="3. Process Invoice", command=lambda: invoice.parse(status_text)).pack(side="left", padx=10)
+    ttk.Button(bottom_frame, text="4. Make Receipt", command=lambda: receipt(status_text)).pack(side="left", padx=10)
     ttk.Button(bottom_frame, text="Exit", command=root.quit).pack(side="right", padx=10)
-    ttk.Button(bottom_frame, text = "Fill Receipt", command = fill).pack(side = "left", padx=10)
-    ttk.Button(bottom_frame, text = "Enter Quantities", command = enter).pack(side = "left", padx=10)
-    ttk.Button(bottom_frame, text = "Post", command = post).pack(side = "left", padx=10)
+    ttk.Button(bottom_frame, text = "5. Fill Receipt", command=lambda: fill(status_text)).pack(side = "left", padx=10)
+    ttk.Button(bottom_frame, text = "6. Enter Quantities", command=lambda: enter(status_text)).pack(side = "left", padx=10)
+    ttk.Button(bottom_frame, text = "7. Post", command=lambda: post(status_text)).pack(side = "left", padx=10)
     root.mainloop()
 
 if __name__ == "__main__":
