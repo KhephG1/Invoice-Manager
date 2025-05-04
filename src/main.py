@@ -18,11 +18,18 @@ invoice = None
 
 root = TkinterDnD.Tk()
 
+email = None
+password = None
+name = None
+
 def open_login_window(status_text):
+    
     def submit_credentials():
+        global email, password, name
         email = email_var.get()
         password = password_var.get()
-        login(driver, str(email), str(password), status_text)
+        name = Name_var.get()
+        login(driver, str(email), str(password), str(name), status_text)
         login_window.destroy()
 
     login_window = tk.Toplevel()
@@ -36,6 +43,10 @@ def open_login_window(status_text):
     password_var = tk.StringVar()
     ttk.Entry(login_window, textvariable=password_var, show="*").pack(pady=5)
 
+    ttk.Label(login_window, text = "Name (first 'space' last):").pack(pady=(10,0))
+    Name_var = tk.StringVar()
+    ttk.Entry(login_window, textvariable=Name_var).pack(pady=5)
+
     ttk.Button(login_window, text="Submit", command=submit_credentials).pack(pady=20)
 
 def receipt(status_text):
@@ -43,8 +54,8 @@ def receipt(status_text):
     make_receipt(driver,invoice, status_text)
 
 def fill(status_text):
-    global invoice, root
-    fill_receipt(driver, invoice, status_text, root)
+    global invoice, root, name, email, password
+    fill_receipt(driver, invoice, status_text, root, str(email), str(password), str(name))
 
 def enter(status_text):
     global invoice,root
@@ -68,7 +79,7 @@ def handle_file_drop(event, status_text):
 # Setup WebDriver
 options = Options()
 options.add_argument("--window-size=1920,1080")
-options.add_argument("--headless=new")
+#options.add_argument("--headless=new")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 driver.implicitly_wait(2)
 

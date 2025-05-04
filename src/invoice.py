@@ -9,6 +9,7 @@ class Invoice:
         self.order_number=""
         self.pages = []
         self.filename = filename
+        self.receipt_num = None
 
     def parse_page(self,page_num,pdf):
         pdf.load(page_num)

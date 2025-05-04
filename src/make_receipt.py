@@ -40,8 +40,13 @@ def make_receipt(driver, invoice, status_text):
     
 
     WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.CSS_SELECTOR, ".btn.btn-primary"))
+        EC.element_to_be_clickable((By.CSS_SELECTOR, ".btn.btn-primary"))
     ).click()
+    time.sleep(5)
+    h1_text = driver.find_element(By.TAG_NAME, "h1").text
+    receipt_number = h1_text.split("#")[1]
+    print("text: " + receipt_number)
+    invoice.receipt_num = int(receipt_number)
 
     log_status(f"Daysmart Receipt created with invoice number: {invoice.invoice_number}", status_text)
 
