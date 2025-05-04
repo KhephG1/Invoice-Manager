@@ -4,13 +4,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
+from log_status import log_status
+from enter_qty import enter_quantity
+import threading
 
-
-
-def promp_user_for_quantity(type,quantity,description):
-    print(type, quantity, description)
     
-def fill_receipt(driver, invoice):
+def fill_receipt(driver, invoice, status_text,root):
     time.sleep(0.5)
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.LINK_TEXT, "Items"))
@@ -30,7 +29,7 @@ def fill_receipt(driver, invoice):
             
             itm = driver.find_element(By.NAME, 'receivedQuantity')
             type = driver.find_element(By.CSS_SELECTOR, "div.quantity span")
-            promp_user_for_quantity(type.text, item.quantity, item.description)
+            item.type = type.text
             itm.send_keys(item.quantity)
             itm = driver.find_element(By.NAME, 'stockQuantity')
             itm.send_keys(item.quantity)
@@ -59,6 +58,15 @@ def fill_receipt(driver, invoice):
                 WebDriverWait(driver, 10).until(
                     EC.element_to_be_clickable((By.CLASS_NAME, "btn-primary"))
                 ).click()
+
+
+    WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.CLASS_NAME, "close"))
+    ).click()
+    time.sleep(10)
+    threading.Thread(target=enter_quantity, args=(driver, invoice, status_text, root)).start()     
+    log_status(status_text, "Receipt Filled Successfully. Note: Press 'Fill Quantities' to ensure item quantities are correct")
+            
             
 
     

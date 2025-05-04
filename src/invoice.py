@@ -1,4 +1,5 @@
 from pdfquery import PDFQuery
+from log_status import log_status
 #pdf query can be used to run jquery like commands on the data of a pdf
 
 class Invoice:
@@ -53,11 +54,12 @@ class Invoice:
 
         return items
 
-    def parse(self):
+    def parse(self, status_text):
         try:
             pdf = PDFQuery(self.filename)
+            log_status("Invoice Opened successfully")
         except TypeError:
-            raise RuntimeError("The program failed to open the file")
+            pass
 
         pdf.load(0)
         label = pdf.pq('LTTextLineHorizontal:contains("Invoice #")')
@@ -72,6 +74,7 @@ class Invoice:
         for i in range(num_pages):
             self.pages.append(self.parse_page(i, pdf))
 
+        log_status(self.__str__(), status_text)
         return self.pages
     
     def __str__(self):
@@ -96,6 +99,7 @@ class Item:
         self.lot_number = lot_number
         self.expiry_date = expiry_date
         self.price = price
+        self.type = None
 
     def __str__(self):
         return f"{self.number}: {self.description} x {self.quantity} ({self.manufacturer} - {self.price})"

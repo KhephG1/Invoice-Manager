@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
 
-def make_receipt(driver, invoice):
+def make_receipt(driver, invoice, status_text):
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[href="/view/inventory"]'))
     ).click()
