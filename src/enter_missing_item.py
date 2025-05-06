@@ -42,6 +42,8 @@ def enter_missing_item(driver,item_desc,item_num):
     navigate_func(driver)
     itm = driver.find_element(By.XPATH, "//input[@placeholder ='Name (required)']")
     itm.send_keys(str(item_desc) + "(" + item_num + ")") 
+    itm = driver.find_element(By.XPATH, "//input[@placeholder ='Display Name (optional)']")
+    itm.send_keys(str(item_desc) + "(" + item_num + ")") 
     while True:
         elements = driver.find_elements(By.LINK_TEXT, "Save + Done")
         if not elements:
