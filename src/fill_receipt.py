@@ -25,7 +25,7 @@ def fill_receipt(driver, invoice, status_text,root):
     for page in invoice.pages:
         for item in page:
             itm = driver.find_element(By.XPATH, "//input[@placeholder ='Select item (required)']")
-            itm.send_keys(99999999)
+            itm.send_keys(item.number)
             time.sleep(0.5)
             itm.send_keys(Keys.ENTER)
             
