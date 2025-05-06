@@ -14,7 +14,7 @@ from enter_missing_item import enter_missing_item
 
 def populate(driver,item):
     itm = driver.find_element(By.XPATH, "//input[@placeholder ='Select item (required)']")
-    itm.send_keys(99999)
+    itm.send_keys(item.number)
     time.sleep(0.5)
     itm.send_keys(Keys.ENTER)
     
@@ -37,7 +37,7 @@ def populate(driver,item):
     itm = driver.find_element(By.NAME, 'lot')
     itm.send_keys(item.lot_number)
     
-def fill_receipt(driver, invoice, status_text,root, email, password, name):
+def fill_receipt(driver, invoice, status_text):
     time.sleep(0.5)
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.LINK_TEXT, "Items"))
@@ -53,12 +53,14 @@ def fill_receipt(driver, invoice, status_text,root, email, password, name):
             try:
                 if not flag:
                     populate(driver,item)
-                    
-                    WebDriverWait(driver, 10000).until(
+                    WebDriverWait(driver, 4).until(
+                        EC.visibility_of_element_located((By.CLASS_NAME, "dropdown-toggle-split"))
+                    )
+                    WebDriverWait(driver, 4).until(
                     EC.element_to_be_clickable((By.CLASS_NAME, "dropdown-toggle-split"))
                     ).click()
                     
-                    WebDriverWait(driver, 10000).until(
+                    WebDriverWait(driver, 4).until(
                         EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, "Save + Add"))
                     ).click()
                     flag=True
@@ -66,49 +68,49 @@ def fill_receipt(driver, invoice, status_text,root, email, password, name):
                 else:
                     populate(driver,item)
                     WebDriverWait(driver, 4).until(
+                        EC.visibility_of_element_located((By.CLASS_NAME, "dropdown-toggle-split"))
+                    )
+                    WebDriverWait(driver, 4).until(
                         EC.element_to_be_clickable((By.CLASS_NAME, "btn-primary"))
                     ).click()
             except exceptions.TimeoutException:
-                log_status(f"Item: {item.description} not found in inventory", status_text)
-                enter_missing_item(email, password, status_text,root)
-                time.sleep(4)
-                login(driver,email,password,name, status_text,True)
-                time.sleep(3)
+                time.sleep(0.5)
+                enter_missing_item(driver,item.description,item.number)
+                time.sleep(0.5)
                 while True:
                     try:
-                        WebDriverWait(driver, 10000).until(
+                        WebDriverWait(driver, 10).until(
                             EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[href="/view/inventory"]'))
                         ).click()
                         break
                     except exceptions.ElementClickInterceptedException:
                         pass
-                WebDriverWait(driver, 1000).until(
+                WebDriverWait(driver, 10000).until(
                     EC.element_to_be_clickable((By.LINK_TEXT, "Receipts"))
                 ).click()
-                WebDriverWait(driver, 1000).until(
+                WebDriverWait(driver, 10000).until(
                     EC.element_to_be_clickable((By.LINK_TEXT, "View All Receipts"))
                 ).click()
                 time.sleep(0.5)
-                WebDriverWait(driver, 1000).until(
+                WebDriverWait(driver, 10000).until(
                     EC.element_to_be_clickable((By.LINK_TEXT, f"Receipt #{invoice.receipt_num}"))
                 ).click()
                 time.sleep(0.5)
-                WebDriverWait(driver, 1000).until(
+                WebDriverWait(driver, 10000).until(
                     EC.element_to_be_clickable((By.LINK_TEXT, "Items"))
                 ).click()
                 time.sleep(0.5)
-                WebDriverWait(driver, 1000).until(
+                WebDriverWait(driver, 10000).until(
                     EC.element_to_be_clickable((By.LINK_TEXT, "Add Item"))
                 ).click()
                 populate(driver,item)
-                WebDriverWait(driver, 4).until(
+                WebDriverWait(driver, 1000).until(
                     EC.element_to_be_clickable((By.CLASS_NAME, "dropdown-toggle-split"))
                 ).click()
-                WebDriverWait(driver, 4).until(
+                WebDriverWait(driver,1000).until(
                     EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, "Save + Add"))
                 ).click()
                 flag=True
-                print("Here 6")
 
 
     WebDriverWait(driver, 10).until(

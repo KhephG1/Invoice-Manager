@@ -20,7 +20,6 @@ root = TkinterDnD.Tk()
 
 email = None
 password = None
-name = None
 
 def open_login_window(status_text):
     
@@ -28,8 +27,7 @@ def open_login_window(status_text):
         global email, password, name
         email = email_var.get()
         password = password_var.get()
-        name = Name_var.get()
-        login(driver, str(email), str(password), str(name), status_text)
+        login(driver, str(email), str(password),status_text)
         login_window.destroy()
 
     login_window = tk.Toplevel()
@@ -43,10 +41,6 @@ def open_login_window(status_text):
     password_var = tk.StringVar()
     ttk.Entry(login_window, textvariable=password_var, show="*").pack(pady=5)
 
-    ttk.Label(login_window, text = "Name (first 'space' last):").pack(pady=(10,0))
-    Name_var = tk.StringVar()
-    ttk.Entry(login_window, textvariable=Name_var).pack(pady=5)
-
     ttk.Button(login_window, text="Submit", command=submit_credentials).pack(pady=20)
 
 def receipt(status_text):
@@ -54,8 +48,8 @@ def receipt(status_text):
     make_receipt(driver,invoice, status_text)
 
 def fill(status_text):
-    global invoice, root, name, email, password
-    fill_receipt(driver, invoice, status_text, root, str(email), str(password), str(name))
+    global invoice
+    fill_receipt(driver, invoice, status_text)
 
 def enter(status_text):
     global invoice,root
