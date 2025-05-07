@@ -16,7 +16,7 @@ def populate(driver,item):
     itm = driver.find_element(By.XPATH, "//input[@placeholder ='Select item (required)']")
     time.sleep(0.5)
     itm.send_keys(item.number)
-    time.sleep(1)
+    time.sleep(0.5)
     itm.send_keys(Keys.ENTER)
     
     itm = driver.find_element(By.NAME, 'receivedQuantity')

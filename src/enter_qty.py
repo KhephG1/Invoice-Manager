@@ -9,7 +9,7 @@ import threading
 import tkinter as tk
 from tkinter import ttk
 
-def prompt_user_input(invoice_item,driver, user_input_event, user_input_value,root):
+def prompt_user_input(invoice_item,user_input_event, user_input_value,root,quantities):
     prompt = tk.Toplevel(root)
     prompt.title("Additional Information")
     prompt.geometry("800x200")
@@ -23,6 +23,7 @@ def prompt_user_input(invoice_item,driver, user_input_event, user_input_value,ro
 
     def submit():
         input = user_input.get()
+        quantities.update({invoice_item.number : int(input)})
         user_input_value.append(input)
         user_input_event.set()
         prompt.destroy()
@@ -30,7 +31,7 @@ def prompt_user_input(invoice_item,driver, user_input_event, user_input_value,ro
     ttk.Button(prompt, text="Submit", command=submit).pack()
 
 
-def enter_quantity(driver, invoice, status_text,root):
+def enter_quantity(driver, invoice, status_text,root, quantities):
     time.sleep(0.3)
     i=0
     for page in invoice.pages:
@@ -43,14 +44,17 @@ def enter_quantity(driver, invoice, status_text,root):
             WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, "Edit Item"))
             ).click()
+            input_val = None
+            if item.number in quantities:
+                input_val = quantities[item.number]
+            else:
+                user_input_event = threading.Event()
+                user_input_value = []
 
-            user_input_event = threading.Event()
-            user_input_value = []
-
-            root.after(0, prompt_user_input, item, driver, user_input_event, user_input_value, root)
-            
-            user_input_event.wait()
-            input_val = user_input_value[0]
+                root.after(0, prompt_user_input, item,user_input_event, user_input_value, root,quantities)
+                
+                user_input_event.wait()
+                input_val = user_input_value[0]
 
             itm = driver.find_element(By.NAME, 'receivedQuantity')
             itm.clear()

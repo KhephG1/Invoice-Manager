@@ -7,7 +7,9 @@ import threading
 from tkinterdnd2 import TkinterDnD, DND_FILES
 from tkinter import ttk, messagebox
 from log_status import log_status
-
+import pickle
+import os
+import sys
 from invoice import Invoice
 from login import login
 from make_receipt import make_receipt
@@ -20,6 +22,9 @@ root = TkinterDnD.Tk()
 
 email = None
 password = None
+
+quantities = {}
+
 
 def open_login_window(status_text):
     
@@ -52,8 +57,8 @@ def fill(status_text):
     fill_receipt(driver, invoice, status_text)
 
 def enter(status_text):
-    global invoice,root
-    threading.Thread(target=enter_quantity, args=(driver, invoice, status_text, root)).start()
+    global invoice,root, quantities
+    threading.Thread(target=enter_quantity, args=(driver, invoice, status_text, root, quantities)).start()
 
 def post(status_text):
     global invoice
@@ -69,6 +74,10 @@ def handle_file_drop(event, status_text):
     else:
         messagebox.showerror("Invalid File :(")
 
+def quit_program(path):
+    with open(path, 'wb') as f:
+        pickle.dump(quantities, f)
+    root.quit()
 
 # Setup WebDriver
 options = Options()
@@ -78,6 +87,20 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 driver.implicitly_wait(2)
 
 def main():
+    global quantities
+    if getattr(sys, 'frozen', False):
+    # If the application is run as a bundle
+        base_path = os.path.dirname(sys.executable)
+    else:
+        # If the application is run in a normal Python environment
+        base_path = os.path.dirname(os.path.abspath(__file__))
+
+    # Define the path for the pickle file
+    pkl_path = os.path.join(base_path, 'quantities.pkl')
+    if os.path.exists(pkl_path) and os.path.getsize(pkl_path) > 0:
+        with open(pkl_path, 'rb') as f:
+            quantities = pickle.load(f)
+    
     root.title("Invoice Receiver")
     root.iconbitmap("assiniboia.ico")
     root.geometry('1200x800')
@@ -124,7 +147,7 @@ def main():
     ttk.Button(bottom_frame, text="2. Login", command=lambda: open_login_window(status_text)).pack(side="left", padx=10)
     ttk.Button(bottom_frame, text="3. Process Invoice", command=lambda: invoice.parse(status_text)).pack(side="left", padx=10)
     ttk.Button(bottom_frame, text="4. Make Receipt", command=lambda: receipt(status_text)).pack(side="left", padx=10)
-    ttk.Button(bottom_frame, text="Exit", command=root.quit).pack(side="right", padx=10)
+    ttk.Button(bottom_frame, text="Exit", command=lambda: quit_program(pkl_path)).pack(side="right", padx=10)
     ttk.Button(bottom_frame, text = "5. Fill Receipt", command=lambda: fill(status_text)).pack(side = "left", padx=10)
     ttk.Button(bottom_frame, text = "6. Enter Quantities", command=lambda: enter(status_text)).pack(side = "left", padx=10)
     ttk.Button(bottom_frame, text = "7. Post", command=lambda: post(status_text)).pack(side = "left", padx=10)

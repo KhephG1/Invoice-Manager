@@ -42,7 +42,7 @@ def make_receipt(driver, invoice, status_text):
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, ".btn.btn-primary"))
     ).click()
-    time.sleep(1)
+    time.sleep(2)
     h1_text = driver.find_element(By.TAG_NAME, "h1").text
     receipt_number = h1_text.split("#")[1]
     #print("text: " + receipt_number)

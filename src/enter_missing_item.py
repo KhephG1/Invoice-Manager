@@ -50,4 +50,5 @@ def enter_missing_item(driver,item_desc,item_num):
             break
         else:
             continue
+    time.sleep(0.5)
     return
