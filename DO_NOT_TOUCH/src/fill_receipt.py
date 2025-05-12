@@ -13,12 +13,12 @@ from login import login
 from enter_missing_item import enter_missing_item
 
 def populate(driver,item):
-    itm = driver.find_element(By.XPATH, "//input[@placeholder ='Select item (required)']")
-    time.sleep(0.5)
+    wait = WebDriverWait(driver, 10)
+    itm = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder ='Select item (required)']")))
     itm.send_keys(item.number)
-    time.sleep(0.5)
+    time.sleep(1)
     itm.send_keys(Keys.ENTER)
-    
+
     itm = driver.find_element(By.NAME, 'receivedQuantity')
     type = driver.find_element(By.CSS_SELECTOR, "div.quantity span")
     item.type = type.text
