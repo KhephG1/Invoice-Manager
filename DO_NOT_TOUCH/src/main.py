@@ -162,6 +162,7 @@ class Manager_FSM:
         if self.state == states.DROP and self.email is not None and self.password is not None :
             print("Here")
             login(driver, str(self.email), str(self.password), self.status_text, True)
+            self.state = states.LOGIN
             self.to_fill_state()
         else:
             login_window = tk.Toplevel()
@@ -175,7 +176,8 @@ class Manager_FSM:
             password_var = tk.StringVar()
             ttk.Entry(login_window, textvariable=password_var, show="*").pack(pady=5)
             ttk.Button(login_window, text="Submit", command=submit_credentials).pack(pady=20)
-        self.state = states.LOGIN
+            self.state = states.LOGIN
+
 
     def to_fill_state(self):
         global driver
@@ -203,9 +205,11 @@ class Manager_FSM:
     def to_post_state(self):
         if self.state == states.ENTER:
             self.state = states.POST
+            print("posting receipt")
             post_the_receipt(driver, self.status_text)
             self.state = states.DROP
         else:
+            print(self.state)
             pass #remain in the current state (whatever it is)
 
     def quit_program(self):

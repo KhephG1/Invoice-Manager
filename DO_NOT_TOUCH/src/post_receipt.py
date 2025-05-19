@@ -15,7 +15,7 @@ def post_the_receipt(driver, status_text):
     EC.element_to_be_clickable((By.CSS_SELECTOR, ".btn.btn-primary"))
     ).click()
 
-    log_status("Receipt posted ! Please check Daysmart to verify. Thanks for using Invoice Receiver! (click 'Exit')", status_text)
+    log_status("Receipt posted ! Please check Daysmart to verify. (drag another pdf) OR (click 'Exit')", status_text)
 
 
 
