@@ -85,12 +85,11 @@ class Manager_FSM:
 
         else:
             pass
-            # print("Failed...Fuck")
 
     def init_window(self):
 
         self.root.title("Invoice Receiver")
-        #self.root.iconbitmap("DO_NOT_TOUCH/assiniboia.ico")
+        self.root.iconbitmap("DO_NOT_TOUCH/assiniboia.ico")
         self.root.geometry('1200x800')
 
         # --- Top Frame ---
@@ -153,11 +152,17 @@ class Manager_FSM:
     def to_login_state(self):
 
         def submit_credentials():
+            success = False
             self.email = email_var.get()
             self.password = password_var.get()
-            login(driver, str(self.email), str(self.password),self.status_text)
-            login_window.destroy()
-            self.to_fill_state()
+            success = login(driver, str(self.email), str(self.password),self.status_text)
+
+            if success:
+                login_window.destroy()
+                self.to_fill_state()
+            else:
+                messagebox.showerror("Invalid Credentials")
+
 
         if self.state == states.DROP and self.email is not None and self.password is not None :
             print("Here")
@@ -191,8 +196,7 @@ class Manager_FSM:
         if self.t.is_alive():
             self.root.after(100, self.check_thread_done)  # check again in 100ms
         else:
-            print("Thread finished!")
-
+           pass
     def to_enter_state(self):
         global driver
 
