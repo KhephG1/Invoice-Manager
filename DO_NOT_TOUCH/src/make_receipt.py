@@ -25,7 +25,7 @@ def make_receipt(driver, invoice, status_text):
     ).click()
     
     
-
+    time.sleep(1)
     supplier = driver.find_element(By.XPATH, "//input[@placeholder ='Select Supplier (required)']")
 
     supplier.send_keys("Western Drug Distribution Centre")
